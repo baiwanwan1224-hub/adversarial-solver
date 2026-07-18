@@ -5,7 +5,12 @@ Rules are defined in config/rules.yaml.
 
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+    _has_yaml = True
+except ImportError:  # pragma: no cover
+    yaml = None  # type: ignore[assignment]
+    _has_yaml = False
 
 
 def load_rules(config_path: str | None = None) -> dict:
@@ -18,7 +23,7 @@ def load_rules(config_path: str | None = None) -> dict:
         config_path = "config"
     rules_file = Path(config_path) / "rules.yaml"
 
-    if not rules_file.exists():
+    if not rules_file.exists() or not _has_yaml:
         return {"banned_words": [], "checklist": []}
 
     with open(rules_file, encoding="utf-8") as f:
