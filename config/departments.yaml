@@ -1,0 +1,53 @@
+# Adversarial Solver — Department Configuration
+# Define your departments, models, and review rules here.
+#
+# Model fields:
+#   primary_model   — Generator (produces content)
+#   reviewer_model  — Critic (reviews content)
+#   arbiter_model   — Arbiter (optional, resolves Generator-Critic deadlocks)
+#   fallback_model  — Fallback (used if primary/critic/arbiter return empty)
+#
+# If arbiter_model is empty ("") or absent, the pipeline runs with 2 models.
+# If fallback_model is empty (""), empty responses trigger a global retry
+# instead of model switching.
+
+departments:
+  marketing:
+    name: "Marketing"
+    scope: "Brand content, ad copy, social media, SEO"
+    primary_model: "deepseek/deepseek-chat"
+    reviewer_model: "deepseek/deepseek-chat"
+    arbiter_model: ""
+    fallback_model: ""
+    tone_checker: true
+    reviewer_role: "Review brand tone, banned words, CTA clarity, and compliance"
+
+  legal:
+    name: "Legal & Compliance"
+    scope: "Privacy policy, terms, regulatory documents"
+    primary_model: "deepseek/deepseek-chat"
+    reviewer_model: "deepseek/deepseek-chat"
+    arbiter_model: ""
+    fallback_model: ""
+    tone_checker: false
+    reviewer_role: "Review legal accuracy, regulatory compliance, liability risks"
+
+  technical:
+    name: "Engineering"
+    scope: "Code, API docs, technical documentation"
+    primary_model: "deepseek/deepseek-chat"
+    reviewer_model: "deepseek/deepseek-chat"
+    arbiter_model: ""
+    fallback_model: ""
+    tone_checker: false
+    reviewer_role: "Review code correctness, architecture, API design"
+
+  editorial:
+    name: "Editorial"
+    scope: "Articles, newsletters, long-form content"
+    primary_model: "deepseek/deepseek-chat"
+    reviewer_model: "deepseek/deepseek-chat"
+    arbiter_model: ""
+    fallback_model: ""
+    tone_checker: true
+    reviewer_role: "Review factual accuracy, style consistency, readability"

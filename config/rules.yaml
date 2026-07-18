@@ -1,0 +1,44 @@
+# Adversarial Solver — Tone Checker Rules
+# Define banned words and quality checklists here.
+# Group words by category for better organization.
+
+banned_words:
+  # Words that suggest mysticism or pseudo-science
+  mysticism:
+    - "magic"
+    - "miracl"
+    - "ancient wisdom"
+    - "secret formula"
+    - "mystical"
+
+  # Medical claims (avoid unless you have regulatory approval)
+  medical:
+    - "cure"
+    - "treat"
+    - "prevent"
+    - "heal"
+    - "detox"
+
+  # Exaggerated marketing language
+  exaggeration:
+    - "premium"
+    - "luxur"
+    - "revolutionary"
+    - "game-changing"
+    - "world-class"
+    - "best-ever"
+
+  # Old or deprecated slogans/copy
+  deprecated:
+    - "example-old-slogan"
+
+# Quality checklist (informational — used for manual review)
+checklist:
+  - "Title ≤ 60 characters"
+  - "Subtitle ≤ 120 characters"
+  - "Paragraph length 50-80 words"
+  - "No banned words detected"
+  - "No medical claims (unless approved)"
+  - "CTA is clear and actionable"
+  - "No 'You should' phrasing"
+  - "Consistent sentence rhythm"
