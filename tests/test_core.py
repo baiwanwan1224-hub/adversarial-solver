@@ -1,26 +1,35 @@
 """Tests for adversarial_solver.core."""
 
 
-def test_import():
-    """Verify the package imports correctly."""
+def test_version():
+    """Verify version is defined and follows semver format."""
+    from adversarial_solver import __version__
+    assert isinstance(__version__, str)
+    assert __version__.startswith("0.")
+    assert len(__version__.split(".")) >= 2
+
+
+def test_import_core():
+    """Verify core functions are importable."""
     from adversarial_solver import (
         adversarial_solve,
         batch_solve,
-        call_model,
-        load_rules,
         segmented_adversarial_solve,
-        tone_check,
     )
-    assert adversarial_solve is not None
-    assert segmented_adversarial_solve is not None
-    assert batch_solve is not None
-    assert tone_check is not None
-    assert load_rules is not None
-    assert call_model is not None
+    assert callable(adversarial_solve)
+    assert callable(segmented_adversarial_solve)
+    assert callable(batch_solve)
 
 
-def test_version():
-    """Verify version is defined."""
-    from adversarial_solver import __version__
-    assert __version__.startswith("0.")
-    assert len(__version__.split(".")) >= 2
+def test_import_models():
+    """Verify model utilities are importable."""
+    from adversarial_solver import call_model, EmptyModelError
+    assert callable(call_model)
+    assert issubclass(EmptyModelError, Exception)
+
+
+def test_import_providers():
+    """Verify provider utilities are importable."""
+    from adversarial_solver import get_context_window, auto_detect_mode
+    assert callable(get_context_window)
+    assert callable(auto_detect_mode)
