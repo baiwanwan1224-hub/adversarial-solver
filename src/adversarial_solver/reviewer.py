@@ -1,9 +1,8 @@
 """Reviewer prompt builder and pass/fail judgment logic."""
 
-from typing import Dict
 
 
-def build_reviewer_prompt(dept_config: Dict, config: Dict) -> str:
+def build_reviewer_prompt(dept_config: dict, config: dict) -> str:
     """Build the critic/reviewer system prompt.
 
     Args:
@@ -78,7 +77,7 @@ def is_passed(review: str, current_output: str = "") -> bool:
 
     if has_fail and not has_pass:
         return False
-    if has_pass and not has_fail:
+    if has_pass and not has_fail:  # noqa: SIM103
         return True
     # Conservative: ambiguous → fail
     return False

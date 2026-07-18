@@ -24,9 +24,7 @@ def is_empty_response(content: str, min_chars: int = 20) -> bool:
         return True
     if content.strip().startswith("[ERROR]"):
         return True
-    if len(content.strip()) < min_chars:
-        return True
-    return False
+    return len(content.strip()) < min_chars
 
 
 def _call_single(
@@ -82,7 +80,7 @@ def _call_single(
             if attempt < max_retries:
                 print(f"   [WARN]  {model_tag} error, retry {attempt+1}/{max_retries}: {e}")
                 continue
-            raise EmptyModelError(
+            raise EmptyModelError(  # noqa: B904
                 f"{model} call failed after {max_retries + 1} attempts: {e}",
                 primary=model,
             )
@@ -127,7 +125,7 @@ def call_model(
     # Try primary model
     try:
         return _call_single(model, system, user_with_activation, max_tokens, temperature, max_retries)
-    except EmptyModelError as e:
+    except EmptyModelError:
         if not fallback_model:
             raise
         print(f"   [RETRY] Primary model failed. Switching to fallback: {fallback_model.split('/')[-1]}")
@@ -136,10 +134,10 @@ def call_model(
                 fallback_model, system, user_with_activation,
                 max_tokens, temperature, max_retries,
             )
-            print(f"   [OK] Fallback succeeded")
+            print("   [OK] Fallback succeeded")
             return result
         except EmptyModelError:
-            raise EmptyModelError(
+            raise EmptyModelError(  # noqa: B904
                 f"ALL models exhausted.\n  Primary: {model}\n  Fallback: {fallback_model}\n"
                 f"  Task may be too complex or models are unavailable.",
                 primary=model,

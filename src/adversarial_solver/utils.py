@@ -2,13 +2,12 @@
 
 import os
 from pathlib import Path
-from typing import Dict, Optional
 
 import yaml
 from dotenv import load_dotenv
 
 
-def load_config(config_path: Optional[str] = None) -> Dict:
+def load_config(config_path: str | None = None) -> dict:
     """Load global config. Optionally loads .env if present.
 
     Args:
@@ -32,7 +31,7 @@ def load_config(config_path: Optional[str] = None) -> Dict:
     }
 
 
-def load_department_config(dept: str, config_path: Optional[str] = None) -> Dict:
+def load_department_config(dept: str, config_path: str | None = None) -> dict:
     """Load department-specific config from config/departments.yaml.
 
     Args:
@@ -55,7 +54,7 @@ def load_department_config(dept: str, config_path: Optional[str] = None) -> Dict
             f"Run 'adversarial-solver init' to create a template."
         )
 
-    with open(yaml_file, "r", encoding="utf-8") as f:
+    with open(yaml_file, encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
 
     departments = data.get("departments", {})

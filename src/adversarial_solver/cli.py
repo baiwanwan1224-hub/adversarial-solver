@@ -5,8 +5,8 @@ from pathlib import Path
 import click
 
 from .core import adversarial_solve, segmented_adversarial_solve
+from .providers import get_context_window
 from .tone_checker import tone_check
-from .providers import auto_detect_mode, get_context_window
 
 
 @click.group()
@@ -46,7 +46,7 @@ def solve(task: str, dept: str, max_rounds: int, mode: str, config: str):
         result = adversarial_solve(task, dept, max_rounds, config, mode)
 
     print(f"\n\n{'=' * 60}")
-    print(f"  Results")
+    print("  Results")
     print(f"{'=' * 60}")
     print(f"  Mode:   {result.get('mode', mode or 'auto')}")
     print(f"  Status: {result['status']}")
@@ -116,9 +116,9 @@ def init(path: str):
         print(f"  Created: {env_file} (edit with your API keys)")
 
     print(f"\n[OK] Config ready: {config_dir.absolute()}")
-    print(f"   1. Edit departments.yaml to define your review teams")
-    print(f"   2. Edit rules.yaml to set banned words")
-    print(f"   3. Edit .env with your API keys")
+    print("   1. Edit departments.yaml to define your review teams")
+    print("   2. Edit rules.yaml to set banned words")
+    print("   3. Edit .env with your API keys")
 
 
 @cli.command()
@@ -133,7 +133,7 @@ def info(model: str):
     print(f"\nModel:  {model}")
     print(f"Context window: {window:,} tokens")
     if window < 16000:
-        print(f"[WARN] Short context — segmented mode recommended for long outputs")
+        print("[WARN] Short context — segmented mode recommended for long outputs")
 
 
 _ENV_EXAMPLE = """# Adversarial Solver — API Keys

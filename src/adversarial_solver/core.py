@@ -10,24 +10,23 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 
-from .models import call_model, EmptyModelError, is_empty_response
-from .tone_checker import tone_check
-from .reviewer import build_reviewer_prompt, is_passed
 from .archiver import archive_result
-from .utils import load_config, load_department_config
+from .models import EmptyModelError, call_model
 from .providers import auto_detect_mode
+from .reviewer import build_reviewer_prompt, is_passed
+from .tone_checker import tone_check
+from .utils import load_config, load_department_config
 
 
 def adversarial_solve(
     task: str,
     dept: str,
     max_rounds: int = 3,
-    config_path: Optional[str] = None,
-    mode: Optional[str] = None,
+    config_path: str | None = None,
+    mode: str | None = None,
     _retry_count: int = 0,
-) -> Dict:
+) -> dict:
     """Dual-model (or 3-model) adversarial solve.
 
     Generator → Critic (→ Arbiter if deadlock) → PASS or PENDING_REVIEW.
@@ -72,7 +71,8 @@ def adversarial_solve(
     print(f"  Department: {dept} ({dept_config.get('name', 'Unknown')})")
     print(f"  Generator:  {primary.split('/')[-1]}")
     print(f"  Critic:     {reviewer.split('/')[-1]}")
-    if arbiter: print(f"  Arbiter:    {arbiter.split('/')[-1]}")
+    if arbiter:
+        print(f"  Arbiter:    {arbiter.split('/')[-1]}")
     print(f"  Mode:       {mode}")
     print(f"{'=' * 60}\n")
 
@@ -101,11 +101,11 @@ def adversarial_solve(
                 tone_result = tone_check(current, config_path)
                 log["tone_check"] = tone_result
                 if not tone_result["passed"]:
-                    review += f"\n\n[Tone Checker]\n" + "\n".join(tone_result["issues"])
+                    review += "\n\n[Tone Checker]\n" + "\n".join(tone_result["issues"])
                     print(f"   [WARN]  Tone Checker: {len(tone_result['issues'])} issue(s)")
 
             if is_passed(review, current):
-                print(f"   [OK] PASSED")
+                print("   [OK] PASSED")
                 final_status = "PASS"
                 break
 
@@ -125,15 +125,15 @@ Decide: PASS (output is acceptable) or FAIL (needs human review). Give a brief r
                     "round": f"{round_num}a", "model": arbiter, "type": "arbiter", "output": arbiter_verdict,
                 })
                 if is_passed(arbiter_verdict, current):
-                    print(f"   [OK] Arbiter: PASSED")
+                    print("   [OK] Arbiter: PASSED")
                     final_status = "PASS"
                     break
                 else:
-                    print(f"   [WARN]  Arbiter: FAILED — escalating to human review")
+                    print("   [WARN]  Arbiter: FAILED — escalating to human review")
                     final_status = "PENDING_REVIEW"
                     break
 
-            print(f"   [FAIL] Needs revision")
+            print("   [FAIL] Needs revision")
             round_label = round_num + 1
             print(f"[Round {round_label}] {primary.split('/')[-1]} revising...")
             current = call_model(
@@ -175,8 +175,8 @@ def segmented_adversarial_solve(
     task: str,
     dept: str,
     max_rounds: int = 3,
-    config_path: Optional[str] = None,
-) -> Dict:
+    config_path: str | None = None,
+) -> dict:
     """Segmented adversarial solve — for long-form content.
 
     Phase 1: Outline → Review → Revise
@@ -214,12 +214,12 @@ def segmented_adversarial_solve(
     print(f"  Department: {dept} ({dept_config.get('name', 'Unknown')})")
     print(f"  Generator:  {primary.split('/')[-1]}")
     print(f"  Critic:     {reviewer.split('/')[-1]}")
-    print(f"  Mode:       segmented (long-form content)")
+    print("  Mode:       segmented (long-form content)")
     print(f"{'=' * 60}\n")
 
     # ── Phase 1: Outline ──
     print(f"{'─' * 40}")
-    print(f"  Phase 1: Outline Generation")
+    print("  Phase 1: Outline Generation")
     print(f"{'─' * 40}")
 
     outline_prompt = f"""Task:
@@ -300,12 +300,12 @@ Output ONLY the HTML body content for this section. 300+ chars."""
 
     # ── Phase 3: Assembly + Final Review ──
     print(f"\n{'─' * 40}")
-    print(f"  Phase 3: Assembly + Final Review")
+    print("  Phase 3: Assembly + Final Review")
     print(f"{'─' * 40}")
 
     all_sections = "\n".join(
         f'<!-- {s.get("id","")}: {s.get("title","")} -->\n<div class="container">\n{html}\n</div>'
-        for s, html in zip(sections, sections_html)
+        for s, html in zip(sections, sections_html, strict=False)
     )
 
     css_prompt = f"Generate <style> CSS for a {len(sections)}-section HTML report. Minimalist, clean typography. Output ONLY <style>...</style>."
@@ -347,7 +347,7 @@ Output ONLY the HTML body content for this section. 300+ chars."""
         tone_result = tone_check(final_html, config_path)
         log["tone_check"] = tone_result
         if not tone_result["passed"]:
-            final_review += f"\n\n[Tone Checker]\n" + "\n".join(tone_result["issues"])
+            final_review += "\n\n[Tone Checker]\n" + "\n".join(tone_result["issues"])
 
     final_status = "PASS" if is_passed(final_review, final_html) else "PENDING_REVIEW"
     log["status"] = final_status
@@ -359,7 +359,7 @@ Output ONLY the HTML body content for this section. 300+ chars."""
     return log
 
 
-def batch_solve(tasks: List[Dict], config_path: Optional[str] = None) -> Dict:
+def batch_solve(tasks: list[dict], config_path: str | None = None) -> dict:
     """Batch process multiple tasks.
 
     Args:
@@ -392,7 +392,7 @@ def batch_solve(tasks: List[Dict], config_path: Optional[str] = None) -> Dict:
     return summary
 
 
-def _build_generator_prompt(dept_config: Dict, config: Dict) -> str:
+def _build_generator_prompt(dept_config: dict, config: dict) -> str:
     """Build generator system prompt from config."""
     constitution_path = config.get("constitution_path", "config/constitution.md")
     constitution_text = ""
@@ -418,7 +418,7 @@ Scope: {dept_config.get('scope', 'General content generation')}
 """
 
 
-def _parse_outline(outline_text: str) -> List[Dict]:
+def _parse_outline(outline_text: str) -> list[dict]:
     """Parse sections JSON with truncation resilience. 5 fallback methods."""
     # Method 1: ```json ``` code block
     json_match = re.search(r'```json\s*([\s\S]*?)\s*(?:```|$)', outline_text)
@@ -430,7 +430,8 @@ def _parse_outline(outline_text: str) -> List[Dict]:
 
     # Method 2: bare JSON
     try:
-        start = outline_text.find('{'); end = outline_text.rfind('}')
+        start = outline_text.find('{')
+        end = outline_text.rfind('}')
         if start >= 0 and end > start:
             return json.loads(outline_text[start:end+1]).get("sections", [])
     except json.JSONDecodeError:

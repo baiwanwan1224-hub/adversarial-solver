@@ -5,11 +5,11 @@ def test_import():
     """Verify the package imports correctly."""
     from adversarial_solver import (
         adversarial_solve,
-        segmented_adversarial_solve,
         batch_solve,
-        tone_check,
-        load_rules,
         call_model,
+        load_rules,
+        segmented_adversarial_solve,
+        tone_check,
     )
     assert adversarial_solve is not None
     assert segmented_adversarial_solve is not None

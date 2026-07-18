@@ -2,7 +2,8 @@
 
 import tempfile
 from pathlib import Path
-from adversarial_solver.tone_checker import tone_check, load_rules
+
+from adversarial_solver.tone_checker import load_rules, tone_check
 
 
 def test_tone_check_no_rules():

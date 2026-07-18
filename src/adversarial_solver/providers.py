@@ -5,10 +5,9 @@ Handles:
 - Provider-specific quirks (M3 system prompt, Claude token limits, etc.)
 """
 
-from typing import Dict, Optional
 
 # Known context windows (in tokens) — used for auto-detecting segmented vs standard mode
-CONTEXT_WINDOWS: Dict[str, int] = {
+CONTEXT_WINDOWS: dict[str, int] = {
     # OpenAI
     "gpt-4.1": 128000,
     "gpt-4.1-mini": 128000,

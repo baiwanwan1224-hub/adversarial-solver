@@ -3,14 +3,12 @@
 Rules are defined in config/rules.yaml.
 """
 
-import re
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import yaml
 
 
-def load_rules(config_path: Optional[str] = None) -> Dict:
+def load_rules(config_path: str | None = None) -> dict:
     """Load tone checker rules from config/rules.yaml.
 
     Returns:
@@ -23,14 +21,14 @@ def load_rules(config_path: Optional[str] = None) -> Dict:
     if not rules_file.exists():
         return {"banned_words": [], "checklist": []}
 
-    with open(rules_file, "r", encoding="utf-8") as f:
+    with open(rules_file, encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
 
     # Flatten grouped banned words
     banned = []
     raw_banned = data.get("banned_words", {})
     if isinstance(raw_banned, dict):
-        for category, words in raw_banned.items():
+        for _category, words in raw_banned.items():
             if isinstance(words, list):
                 banned.extend(words)
     elif isinstance(raw_banned, list):
@@ -42,7 +40,7 @@ def load_rules(config_path: Optional[str] = None) -> Dict:
     }
 
 
-def tone_check(text: str, config_path: Optional[str] = None) -> Dict:
+def tone_check(text: str, config_path: str | None = None) -> dict:
     """Run tone check on generated text.
 
     Separates "internal notes" from "public content" before checking.
@@ -72,7 +70,7 @@ def tone_check(text: str, config_path: Optional[str] = None) -> Dict:
             issues.append(f"Banned word: {word}")
 
     # Basic length checks
-    lines = [l.strip() for l in public_text.split("\n") if l.strip()]
+    lines = [ln.strip() for ln in public_text.split("\n") if ln.strip()]
     if lines and len(lines[0]) > 80:
         issues.append(f"First line may be too long: {len(lines[0])} chars (suggest ≤60)")
 

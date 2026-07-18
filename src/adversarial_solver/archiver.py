@@ -3,14 +3,13 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
 
 
 def archive_result(
-    log: Dict,
+    log: dict,
     dept: str,
     status: str,
-    config_path: Optional[str] = None,
+    config_path: str | None = None,
 ) -> Path:
     """Archive an adversarial solve execution log to outputs/ directory.
 
@@ -23,10 +22,7 @@ def archive_result(
     Returns:
         Path to the archived file
     """
-    if config_path:
-        outputs_dir = Path(config_path).parent / "outputs"
-    else:
-        outputs_dir = Path("outputs")
+    outputs_dir = Path(config_path).parent / "outputs" if config_path else Path("outputs")
 
     target_dir = outputs_dir / dept if status == "PASS" else outputs_dir / "_pending_review"
     target_dir.mkdir(parents=True, exist_ok=True)
