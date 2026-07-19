@@ -1,7 +1,17 @@
 # Adversarial Solver / 对抗式求解器
 
-> Dual-LLM adversarial content generation — Generator produces, Critic reviews, loop until PASS.
-> 双 LLM 对抗式内容生成 — Generator 产出，Critic 审核，不通过则修订，循环直到 PASS。
+[![PyPI](https://img.shields.io/pypi/v/adversarial-solver)](https://pypi.org/project/adversarial-solver/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/adversarial-solver)](https://pypi.org/project/adversarial-solver/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+
+> **Two AIs argue until your content is right.**
+> Generator writes. Critic attacks. Loop until PASS.
+> Built for teams tired of fixing AI-generated slop.
+
+> **两个 AI 互相吵架，直到你的内容合格。**
+> Generator 产出，Critic 攻击，不通过就修订，循环直到 PASS。
+> 为厌倦给 AI 内容修修补补的团队而建。
 
 ## Why? / 为什么？
 
@@ -18,6 +28,34 @@ Adversarial Solver makes two (or three) LLMs keep each other in check:
 
 The result: content that has been through a quality-control pipeline *before* it reaches human eyes.
 结果：内容在到达人眼之前，已经跑完一条质检流水线。
+
+```mermaid
+flowchart TD
+    T[Task / 任务] --> G[Generator / 生成器]
+    G -->|v1 draft / 初稿| C[Critic / 审核者]
+    C -->|PASS ✅| O[Output / 输出]
+    C -->|FAIL ❌| R[Revise / 修订]
+    R --> G
+    C -->|Deadlocked / 僵局| A[Arbiter 仲裁]
+    A -->|Final verdict| O
+    G -.->|Empty response / 空值| F[Fallback Model / 兜底]
+    F --> G
+```
+
+### See It In Action / 30 秒看完
+
+```bash
+$ adversarial-solver solve -t "Write a landing page headline for our tea brand." -d marketing
+
+[Generator · gpt-4.1] Drafting v1...
+[Critic · claude-sonnet-4-6] ❌ Uses banned word 'premium' (rule: exaggeration)
+[Generator · gpt-4.1] Revising v2...
+[Critic · claude-sonnet-4-6] ❌ Missing CTA
+[Generator · gpt-4.1] Revising v3...
+[Critic · claude-sonnet-4-6] ✅ PASS (round 3)
+
+Output: "Tea that knows when to stop. Take A Beat."
+```
 
 ## Key Features / 核心功能
 
