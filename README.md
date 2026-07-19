@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
+💬 [**Join the discussion**](https://github.com/baiwanwan1224-hub/adversarial-solver/discussions) · 🐛 [Report a bug](https://github.com/baiwanwan1224-hub/adversarial-solver/issues) · ⭐ Star if useful
+
 > **Two AIs argue until your content is right.**
 > Generator writes. Critic attacks. Loop until PASS.
 > Built for teams tired of fixing AI-generated slop.
